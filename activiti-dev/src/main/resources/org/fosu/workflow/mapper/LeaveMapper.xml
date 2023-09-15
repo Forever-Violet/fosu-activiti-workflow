@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.fosu.workflow.mapper.LeaveMapper">
+
+    <resultMap id="LeaveAndStatusList"
+               type="org.fosu.workflow.entities.Leave">
+        <id column="id" property="id" />
+        <result column="username" property="username" />
+        <result column="duration" property="duration" />
+        <result column="principal" property="principal" />
+        <result column="contact_phone" property="contactPhone" />
+        <result column="leave_type" property="leaveType" />
+        <result column="title" property="title" />
+        <result column="leave_reason" property="leaveReason" />
+        <result column="start_date" property="startDate" />
+        <result column="end_date" property="endDate" />
+        <result column="create_date" property="createDate" />
+        <result column="update_date" property="updateDate" />
+        <result column="process_instance_id" property="processInstanceId"
+        />
+        <result column="status" property="status" />
+    </resultMap>
+
+    <!-- IPage<Leave> getLeaveAndStatusList(IPage page,
+@Param("req")LeaveREQ req); -->
+    <select id="getLeaveAndStatusList" resultMap="LeaveAndStatusList">
+        SELECT t1.*, t2.*
+        FROM mxg_leave t1
+        LEFT JOIN mxg_business_status t2 ON T1.id = t2.business_key
+        WHERE t1.username = #{req.username}
+        <if test="req.title != null and req.title != ''">
+            AND t1.title LIKE CONCAT('%', #{req.title}, '%')
+        </if>
+        <if test="req.status != null">
+            AND t2.status = #{req.status}
+        </if>
+        ORDER BY t1.create_date DESC
+    </select>
+
+
+</mapper>
